@@ -1,1 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kami-Furano - Discover the Hidden Gem of Hokkaido</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #E6E6FA 0%, #D8BFD8 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #9370DB;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #9370DB;
+        }
+
+        /* Language Selector */
+        .language-selector {
+            position: relative;
+            margin-left: 2rem;
+        }
+
+        .language-btn {
+            background: none;
+            border: 2px solid #9370DB;
+            color: #9370DB;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .language-btn:hover {
+            background: #9370DB;
+            color: white;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            min-width: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .language-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .language-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .language-option:last-child {
+            border-bottom: none;
+        }
+
+        .language-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .language-option.active {
+            background-color: #9370DB;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                        url('Image_KamiFu.png');
+            background-size: cover;
+            background-position: center 20%;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #9370DB, #8A2BE2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Main Content */
+        main {
+            background: white;
+            margin-top: 80px;
+        }
+
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #9370DB;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Food Section */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .food-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .food-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .food-image {
+            height: 200px;
+            background: linear-gradient(45deg, #9370DB, #8A2BE2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .food-content {
+            padding: 1.5rem;
+        }
+
+        .food-content h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .food-content p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #9370DB;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .language-selector {
+                margin-left: 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🌸 Kami-Furano</div>
+            <ul class="nav-links">
+                <li><a href="#about" data-en="About" data-ja="概要">About</a></li>
+                <li><a href="#nature" data-en="Nature" data-ja="自然">Nature</a></li>
+                <li><a href="#food" data-en="Food" data-ja="グルメ">Food</a></li>
+                <li><a href="#activities" data-en="Activities" data-ja="アクティビティ">Activities</a></li>
+                <li><a href="#access" data-en="Access" data-ja="アクセス">Access</a></li>
+            </ul>
+            <div class="language-selector">
+                <button class="language-btn" onclick="toggleLanguageDropdown()">
+                    <span class="current-lang">EN</span>
+                    <span>▼</span>
+                </button>
+                <div class="language-dropdown" id="languageDropdown">
+                    <div class="language-option active" onclick="changeLanguage('en')">
+                        <span>🇺🇸</span> English
+                    </div>
+                    <div class="language-option" onclick="changeLanguage('ja')">
+                        <span>🇯🇵</span> 日本語
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-en="Discover Kami-Furano" data-ja="上富良野を発見">Discover Kami-Furano</h1>
+            <p data-en="A hidden gem in the heart of Hokkaido, where lavender fields meet majestic mountains and authentic Japanese culture thrives." data-ja="北海道の中心部に位置する隠れた宝石。ラベンダー畑と雄大な山々が交差し、本格的な日本の文化が息づく場所です。">A hidden gem in the heart of Hokkaido, where lavender fields meet majestic mountains and authentic Japanese culture thrives.</p>
+            <a href="#about" class="cta-button" data-en="Explore More" data-ja="詳しく見る">Explore More</a>
+        </div>
+    </section>
+
+    <main>
+        <section id="about" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in" data-en="About Kami-Furano" data-ja="上富良野について">About Kami-Furano</h2>
+                <div class="features-grid">
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🗺️</div>
+                        <h3 data-en="Perfect Location" data-ja="理想的な立地">Perfect Location</h3>
+                        <p data-en="Located in central Hokkaido between Biei and Furano, Kami-Furano offers the perfect balance of accessibility and tranquility. Just 2.5 hours from Sapporo and 45 minutes from Asahikawa Airport." data-ja="美瑛と富良野の間に位置する上富良野は、アクセスの良さと静寂のバランスが完璧です。札幌から2.5時間、旭川空港から45分の距離です。">Located in central Hokkaido between Biei and Furano, Kami-Furano offers the perfect balance of accessibility and tranquility. Just 2.5 hours from Sapporo and 45 minutes from Asahikawa Airport.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🌄</div>
+                        <h3 data-en="Mountain Views" data-ja="山々の景色">Mountain Views</h3>
+                        <p data-en="Situated at the foot of the Tokachi Mountain Range, the town offers breathtaking views of Mount Tokachi and surrounding peaks, creating a dramatic backdrop for your adventures." data-ja="十勝岳連峰の麓に位置し、十勝岳と周辺の峰々の息を呑むような景色を提供し、あなたの冒険に劇的な背景を作り出します。">Situated at the foot of the Tokachi Mountain Range, the town offers breathtaking views of Mount Tokachi and surrounding peaks, creating a dramatic backdrop for your adventures.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🌾</div>
+                        <h3 data-en="Agricultural Paradise" data-ja="農業の楽園">Agricultural Paradise</h3>
+                        <p data-en="Known for its rich agricultural heritage, Kami-Furano produces some of Hokkaido's finest crops including potatoes, wheat, and the famous Furano melons." data-ja="豊かな農業の伝統で知られ、ジャガイモ、小麦、そして有名な富良野メロンなど、北海道最高級の作物を生産しています。">Known for its rich agricultural heritage, Kami-Furano produces some of Hokkaido's finest crops including potatoes, wheat, and the famous Furano melons.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="nature" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in" data-en="Natural Beauty" data-ja="自然の美しさ">Natural Beauty</h2>
+                <div class="features-grid">
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">💜</div>
+                        <h3 data-en="Lavender Fields" data-ja="ラベンダー畑">Lavender Fields</h3>
+                        <p data-en="Home to Japan's largest lavender fields, the town transforms into a purple paradise during summer. The Lavender East fields are a must-see spectacle." data-ja="日本最大のラベンダー畑を有し、夏には町全体が紫色の楽園に変わります。ラベンダーイーストの畑は必見の光景です。">Home to Japan's largest lavender fields, the town transforms into a purple paradise during summer. The Lavender East fields are a must-see spectacle.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🌅</div>
+                        <h3 data-en="Stunning Sunrises" data-ja="美しい日の出">Stunning Sunrises</h3>
+                        <p data-en="Hinode Park offers spectacular sunrise views over the lavender fields, creating magical moments that photographers dream of." data-ja="日の出公園では、ラベンダー畑越しの壮大な日の出を眺めることができ、写真家が夢見る魔法のような瞬間を作り出します。">Hinode Park offers spectacular sunrise views over the lavender fields, creating magical moments that photographers dream of.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">⭐</div>
+                        <h3 data-en="Starry Nights" data-ja="星空">Starry Nights</h3>
+                        <p data-en="With minimal light pollution, Kami-Furano offers incredible stargazing opportunities, especially from the elevated areas around Mount Tokachi." data-ja="光害が少ないため、特に十勝岳周辺の高台からは信じられないほどの星空観察が楽しめます。">With minimal light pollution, Kami-Furano offers incredible stargazing opportunities, especially from the elevated areas around Mount Tokachi.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🏔️</div>
+                        <h3 data-en="Miyama Pass" data-ja="深山峠">Miyama Pass</h3>
+                        <p data-en="Experience 360-degree panoramic views from Miyama Pass, where you can see the entire Furano Basin and surrounding mountains." data-ja="深山峠からは360度のパノラマビューを体験でき、富良野盆地全体と周辺の山々を見渡すことができます。">Experience 360-degree panoramic views from Miyama Pass, where you can see the entire Furano Basin and surrounding mountains.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="food" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in" data-en="Local Cuisine & Specialties" data-ja="地元グルメと特産品">Local Cuisine & Specialties</h2>
+                <div class="food-grid">
+                    <div class="food-item fade-in">
+                        <div class="food-image">🥩</div>
+                        <div class="food-content">
+                            <h4 data-en="Kami-Furano Pork" data-ja="かみふらのポーク">Kami-Furano Pork</h4>
+                            <p data-en="Premium locally-raised pork known for its tender texture and rich flavor. Try it in shabu-shabu or ginger pork dishes." data-ja="柔らかい食感と豊かな風味で知られる地元産の高級豚肉。しゃぶしゃぶや生姜焼きでお試しください。">Premium locally-raised pork known for its tender texture and rich flavor. Try it in shabu-shabu or ginger pork dishes.</p>
+                        </div>
+                    </div>
+                    <div class="food-item fade-in">
+                        <div class="food-image">🍦</div>
+                        <div class="food-content">
+                            <h4 data-en="Lavender Soft Cream" data-ja="ラベンダーソフトクリーム">Lavender Soft Cream</h4>
+                            <p data-en="A unique and refreshing treat made with local lavender, perfect for cooling down on hot summer days." data-ja="地元のラベンダーを使ったユニークで爽やかなデザート。暑い夏の日に涼むのに最適です。">A unique and refreshing treat made with local lavender, perfect for cooling down on hot summer days.</p>
+                        </div>
+                    </div>
+                    <div class="food-item fade-in">
+                        <div class="food-image">🌽</div>
+                        <div class="food-content">
+                            <h4 data-en="Sweet Corn" data-ja="甘いトウモロコシ">Sweet Corn</h4>
+                            <p data-en="Exceptionally sweet corn grown in the fertile soil of Kami-Furano, a summer delicacy not to be missed." data-ja="上富良野の肥沃な土壌で育てられた格別に甘いトウモロコシ。夏のごちそうとして見逃せません。">Exceptionally sweet corn grown in the fertile soil of Kami-Furano, a summer delicacy not to be missed.</p>
+                        </div>
+                    </div>
+                    <div class="food-item fade-in">
+                        <div class="food-image">🍈</div>
+                        <div class="food-content">
+                            <h4 data-en="Furano Melons" data-ja="富良野メロン">Furano Melons</h4>
+                            <p data-en="Juicy and sweet melons that are among the finest in Japan, available during the summer harvest season." data-ja="日本最高級のジューシーで甘いメロン。夏の収穫期に楽しめます。">Juicy and sweet melons that are among the finest in Japan, available during the summer harvest season.</p>
+                        </div>
+                    </div>
+                    <div class="food-item fade-in">
+                        <div class="food-image">🥔</div>
+                        <div class="food-content">
+                            <h4 data-en="Premium Potatoes" data-ja="高級ジャガイモ">Premium Potatoes</h4>
+                            <p data-en="High-quality potatoes used in local dishes and even distilled into unique potato shochu." data-ja="地元料理に使用される高品質のジャガイモ。ユニークなジャガイモ焼酎にも蒸留されます。">High-quality potatoes used in local dishes and even distilled into unique potato shochu.</p>
+                        </div>
+                    </div>
+                    <div class="food-item fade-in">
+                        <div class="food-image">🍷</div>
+                        <div class="food-content">
+                            <h4 data-en="Local Wine" data-ja="地元ワイン">Local Wine</h4>
+                            <p data-en="Visit local wineries to taste wines made from grapes grown in the cool Hokkaido climate." data-ja="地元のワイナリーを訪れて、北海道の涼しい気候で育てられたブドウから作られたワインを味わってください。">Visit local wineries to taste wines made from grapes grown in the cool Hokkaido climate.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activities" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in" data-en="Things to Do" data-ja="楽しみ方">Things to Do</h2>
+                <div class="features-grid">
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🚴</div>
+                        <h3 data-en="Cycling Adventures" data-ja="サイクリング">Cycling Adventures</h3>
+                        <p data-en="Explore the scenic countryside on well-maintained cycling routes, perfect for enjoying the fresh air and beautiful landscapes." data-ja="整備されたサイクリングルートで美しい田園地帯を探索し、新鮮な空気と美しい風景を楽しむのに最適です。">Explore the scenic countryside on well-maintained cycling routes, perfect for enjoying the fresh air and beautiful landscapes.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">♨️</div>
+                        <h3 data-en="Hot Springs" data-ja="温泉">Hot Springs</h3>
+                        <p data-en="Relax in the Tokachi Onsen area, home to some of Hokkaido's highest altitude hot springs with stunning mountain views." data-ja="十勝温泉郷でリラックス。北海道最高所の温泉の一つで、壮大な山々の景色を楽しめます。">Relax in the Tokachi Onsen area, home to some of Hokkaido's highest altitude hot springs with stunning mountain views.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🏕️</div>
+                        <h3 data-en="Camping" data-ja="キャンプ">Camping</h3>
+                        <p data-en="Experience nature up close at Hinode Park Campground, surrounded by lavender fields and mountain vistas." data-ja="日の出公園キャンプ場で自然を身近に体験。ラベンダー畑と山々の景色に囲まれています。">Experience nature up close at Hinode Park Campground, surrounded by lavender fields and mountain vistas.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🎨</div>
+                        <h3 data-en="Art & Culture" data-ja="アートと文化">Art & Culture</h3>
+                        <p data-en="Visit local galleries and the Miyama Pass Art Park to discover the creative spirit of the region." data-ja="地元のギャラリーや深山峠アートパークを訪れて、地域の創造的な精神を発見してください。">Visit local galleries and the Miyama Pass Art Park to discover the creative spirit of the region.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title fade-in" data-en="Kami-Furano by the Numbers" data-ja="上富良野の数字">Kami-Furano by the Numbers</h2>
+                <div class="stats">
+                    <div class="stat-item fade-in">
+                        <div class="stat-number">10,000</div>
+                        <div class="stat-label" data-en="Population" data-ja="人口">Population</div>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <div class="stat-number">2.5</div>
+                        <div class="stat-label" data-en="Hours from Sapporo" data-ja="札幌からの時間">Hours from Sapporo</div>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <div class="stat-number">45</div>
+                        <div class="stat-label" data-en="Minutes from Asahikawa Airport" data-ja="旭川空港からの分">Minutes from Asahikawa Airport</div>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label" data-en="Distinct Seasons" data-ja="四季">Distinct Seasons</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="access" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in" data-en="Getting There" data-ja="アクセス方法">Getting There</h2>
+                <div class="features-grid">
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🚄</div>
+                        <h3 data-en="By Train" data-ja="電車で">By Train</h3>
+                        <p data-en="Take the JR Furano Line to Kami-Furano Station. Regular services connect from Sapporo and Asahikawa." data-ja="JR富良野線で上富良野駅まで。札幌と旭川から定期的なサービスがあります。">Take the JR Furano Line to Kami-Furano Station. Regular services connect from Sapporo and Asahikawa.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">🚗</div>
+                        <h3 data-en="By Car" data-ja="車で">By Car</h3>
+                        <p data-en="Route 237 runs through the town, making it easily accessible by car. Scenic drives from Sapporo or Asahikawa." data-ja="国道237号が町を通っており、車で簡単にアクセスできます。札幌や旭川からの景色の良いドライブが楽しめます。">Route 237 runs through the town, making it easily accessible by car. Scenic drives from Sapporo or Asahikawa.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">✈️</div>
+                        <h3 data-en="By Air" data-ja="飛行機で">By Air</h3>
+                        <p data-en="Fly to Asahikawa Airport, then take a 45-minute drive or bus ride to Kami-Furano." data-ja="旭川空港に飛行機で行き、そこから45分の車またはバスで上富良野まで。">Fly to Asahikawa Airport, then take a 45-minute drive or bus ride to Kami-Furano.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p data-en="&copy; 2025 yuuenchi. Discover the beauty of Hokkaido's hidden gem." data-ja="&copy; 2025 yuuenchi。北海道の隠れた宝石の美しさを発見してください。">&copy; 2025 yuuenchi. Discover the beauty of Hokkaido's hidden gem.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Language management
+        let currentLanguage = 'en';
+
+        // Toggle language dropdown
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('languageDropdown');
+            const languageBtn = document.querySelector('.language-btn');
+            
+            if (!languageBtn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Change language function
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update language button
+            const currentLangSpan = document.querySelector('.current-lang');
+            currentLangSpan.textContent = lang.toUpperCase();
+            
+            // Update dropdown active state
+            document.querySelectorAll('.language-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update all translatable elements
+            updatePageLanguage();
+            
+            // Close dropdown
+            document.getElementById('languageDropdown').classList.remove('show');
+        }
+
+        // Update page language
+        function updatePageLanguage() {
+            const elements = document.querySelectorAll('[data-en][data-ja]');
+            
+            elements.forEach(element => {
+                if (currentLanguage === 'ja') {
+                    element.textContent = element.getAttribute('data-ja');
+                } else {
+                    element.textContent = element.getAttribute('data-en');
+                }
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all elements that should fade in
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>
