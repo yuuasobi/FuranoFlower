@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kami-Furano - Discover the Hidden Gem of Hokkaido</title>
+    <link rel="icon" type="image/png" href="../src/lavender.png">
     <style>
         * {
             margin: 0;
@@ -46,6 +47,15 @@
             font-size: 1.8rem;
             font-weight: bold;
             color: #9370DB;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
 
         .nav-links {
@@ -360,8 +370,12 @@
 <body>
     <header>
         <nav class="container">
-            <div class="logo">🌸 Kami-Furano</div>
+            <div class="logo">
+                <img src="../src/lavender.png" alt="Lavender" class="logo-icon">
+                Kami-Furano
+            </div>
             <ul class="nav-links">
+                <li><a href="../index.html" data-en="TOP" data-ja="トップ">TOP</a></li>
                 <li><a href="#about" data-en="About" data-ja="概要">About</a></li>
                 <li><a href="#nature" data-en="Nature" data-ja="自然">Nature</a></li>
                 <li><a href="#food" data-en="Food" data-ja="グルメ">Food</a></li>
@@ -573,7 +587,7 @@
 
     <footer>
         <div class="container">
-            <p data-en="&copy; 2025 yuuenchi. Discover the beauty of Hokkaido's hidden gem." data-ja="&copy; 2025 yuuenchi。北海道の隠れた宝石の美しさを発見してください。">&copy; 2025 yuuenchi. Discover the beauty of Hokkaido's hidden gem.</p>
+            <p>&copy; 2025 yuuenchi.</p>
         </div>
     </footer>
 
