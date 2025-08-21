@@ -1,0 +1,29 @@
+<!-- Common Header Component -->
+<header>
+    <nav class="container">
+        <div class="logo">
+            <a href="#about" id="logo-link">
+                <img src="../src/lavender.png" alt="Lavender" class="logo-icon">
+                <span>Kami-Furano</span>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about" data-en="About" data-ja="概要">About</a></li>
+            <li><a href="games.html" data-en="Games" data-ja="ゲーム">Games</a></li>
+        </ul>
+        <div class="language-selector">
+            <button class="language-btn" onclick="toggleLanguageDropdown()">
+                <span class="current-lang">EN</span>
+                <span>▼</span>
+            </button>
+            <div class="language-dropdown" id="languageDropdown">
+                <div class="language-option active" onclick="changeLanguage('en')">
+                    <span>🇺🇸</span> English
+                </div>
+                <div class="language-option" onclick="changeLanguage('ja')">
+                    <span>🇯🇵</span> 日本語
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

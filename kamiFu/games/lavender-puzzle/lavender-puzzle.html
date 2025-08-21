@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ラベンダー収穫パズル - Lavender Harvest Puzzle</title>
+    <link rel="stylesheet" href="lavender-puzzle.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- スタート画面 -->
+        <div id="start-screen" class="screen active">
+                         <div class="title-container">
+                 <h1 class="game-title">Lavender Harvest Puzzle</h1>
+                 <div class="lavender-field-bg"></div>
+             </div>
+            <div class="menu-container">
+                                 <button id="start-btn" class="menu-btn">Start Game</button>
+                 <button id="how-to-play-btn" class="menu-btn secondary">How to Play</button>
+                                 <button id="lang-btn" class="menu-btn secondary">Language: English</button>
+                <div class="instructions">
+                                         <p id="instruction-text">Connect 3 or more lavender flowers of the same color!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ゲーム画面 -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="score-container">
+                    <span class="score-label">スコア:</span>
+                    <span id="score" class="score">0</span>
+                </div>
+                <div class="time-container">
+                    <span class="time-label">残り時間:</span>
+                    <span id="timer" class="timer">60</span>
+                </div>
+            </div>
+            
+            <div class="game-board-container">
+                <canvas id="game-board" width="400" height="400"></canvas>
+                <div id="combo-text" class="combo-text"></div>
+            </div>
+
+            <div class="game-controls">
+                <button id="pause-btn" class="control-btn">一時停止</button>
+                <button id="restart-btn" class="control-btn">リスタート</button>
+                <button id="game-back-to-menu-btn" class="control-btn">メニューに戻る</button>
+            </div>
+        </div>
+
+                 <!-- ゲームオーバー画面 -->
+         <div id="gameover-screen" class="screen">
+             <div class="result-container">
+                 <h2 class="result-title">Harvest Complete!</h2>
+                 <div class="final-score">
+                     <span class="final-score-label">Your Harvest:</span>
+                     <span id="final-score" class="final-score-value">0</span>
+                     <span class="final-score-unit">points</span>
+                 </div>
+                 <div class="result-message">
+                     <p id="result-message">Excellent harvest!</p>
+                 </div>
+             </div>
+            <div class="result-controls">
+                                 <button id="retry-btn" class="menu-btn">Play Again</button>
+                 <button id="back-to-menu-btn" class="menu-btn secondary">Back to Menu</button>
+            </div>
+        </div>
+
+        <!-- 遊び方画面 -->
+        <div id="how-to-play-screen" class="screen">
+            <div class="how-to-play-container">
+                <h2 class="how-to-play-title">遊び方</h2>
+                <h3 class="how-to-play-subtitle">How to Play</h3>
+                <div class="how-to-play-content">
+                    <div class="how-to-play-section">
+                        <h4 class="section-title">基本操作</h4>
+                        <p class="section-text">同じ色のラベンダーをマウスでドラッグしてつなげてください。</p>
+                        <p class="section-text">3個以上つなげると自動的に収穫され、スコアが加算されます。</p>
+                    </div>
+                    <div class="how-to-play-section">
+                        <h4 class="section-title">ゲームルール</h4>
+                        <ul class="rule-list">
+                            <li>制限時間は60秒です</li>
+                            <li>つなげた数が多いほど高スコア</li>
+                            <li>4個以上つなげるとコンボボーナス</li>
+                            <li>収穫後、上のラベンダーが下に落ちてきます</li>
+                        </ul>
+                    </div>
+                    <div class="how-to-play-section">
+                        <h4 class="section-title">スコアシステム</h4>
+                        <ul class="score-list">
+                            <li>3個つなげ: 30点</li>
+                            <li>4個つなげ: 60点</li>
+                            <li>5個つなげ: 100点</li>
+                            <li>6個つなげ: 150点</li>
+                        </ul>
+                    </div>
+                </div>
+                <button id="how-to-play-back-btn" class="menu-btn">メニューに戻る</button>
+            </div>
+        </div>
+
+        <!-- 一時停止画面 -->
+        <div id="pause-screen" class="screen overlay">
+            <div class="pause-container">
+                <h2>一時停止</h2>
+                <p>Paused</p>
+                <button id="resume-btn" class="menu-btn">続ける</button>
+                <button id="pause-back-to-menu-btn" class="menu-btn secondary">メニューに戻る</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- エフェクト用の要素 -->
+    <div id="effects-container"></div>
+
+    <script src="lavender-puzzle.js"></script>
+</body>
+</html>
