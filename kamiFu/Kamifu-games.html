@@ -46,7 +46,7 @@
 
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             margin-top: 3rem;
         }
@@ -54,84 +54,63 @@
         /* Game Card Styles */
         .game-card {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
             position: relative;
-            cursor: pointer;
             overflow: hidden;
         }
 
         .game-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 20px 50px rgba(147, 112, 219, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .game-thumbnail {
             width: 100%;
-            height: 200px;
+            height: 160px;
             object-fit: cover;
             border-radius: 10px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .game-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
             color: #333;
         }
 
         .game-card p {
             color: #666;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
         }
 
-        .game-card-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(147, 112, 219, 0.9), rgba(138, 43, 226, 0.9));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .play-btn {
+            background: linear-gradient(135deg, #9370DB, #8A2BE2);
             color: white;
-            font-size: 1.5rem;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
             font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(147, 112, 219, 0.3);
+            margin-top: 0.8rem;
         }
 
-        .game-card:hover .game-card-overlay {
-            opacity: 1;
+        .play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(147, 112, 219, 0.5);
+            background: linear-gradient(135deg, #8A2BE2, #9370DB);
         }
 
-        /* Back to Home Button */
-        .back-home {
-            text-align: center;
-            margin-top: 3rem;
-        }
 
-        .back-home-btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: linear-gradient(45deg, #9370DB, #8A2BE2);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .back-home-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
 
         /* Footer */
         footer {
@@ -212,17 +191,12 @@
             <div class="container">
                 <h1 class="section-title fade-in" data-en="Games" data-ja="ゲーム">Games</h1>
                 <div class="games-grid">
-                    <div class="game-card fade-in" onclick="openGame('lavender-puzzle')">
+                    <div class="game-card fade-in">
                         <img src="games/lavender-puzzle/lavender-puzzle.png" alt="Lavender Harvest Puzzle" class="game-thumbnail">
                         <h3 data-en="Lavender Harvest Puzzle" data-ja="ラベンダー収穫パズル">Lavender Harvest Puzzle</h3>
                         <p data-en="Connect lavender flowers of the same color to harvest them!" data-ja="同じ色のラベンダーの花をつないで収穫しましょう！">Connect lavender flowers of the same color to harvest them! </p>
-                        <div class="game-card-overlay">
-                            <span data-en="Play Now" data-ja="今すぐプレイ">Play Now</span>
-                        </div>
+                        <button class="play-btn" onclick="openGame('lavender-puzzle')" data-en="Play Now" data-ja="今すぐプレイ">Play Now</button>
                     </div>
-                </div>
-                <div class="back-home">
-                    <a href="KamiFu.html" class="back-home-btn" data-en="Back to Home" data-ja="ホームに戻る">Back to Home</a>
                 </div>
             </div>
         </section>

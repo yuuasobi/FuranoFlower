@@ -41,6 +41,7 @@ body::before {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 /* 画面管理 */
@@ -57,6 +58,7 @@ body::before {
     padding: 20px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
+    overflow-y: auto;
 }
 
 .screen.active {
@@ -167,12 +169,14 @@ body::before {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 600px;
+    max-width: 450px;
     margin-bottom: 20px;
     padding: 15px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .score-container, .time-container {
@@ -198,6 +202,8 @@ body::before {
 .game-board-container {
     position: relative;
     margin: 20px 0;
+    display: flex;
+    justify-content: center;
 }
 
 #game-board {
@@ -207,6 +213,10 @@ body::before {
     box-shadow: 0 8px 25px rgba(147, 112, 219, 0.3);
     cursor: pointer;
     transition: transform 0.3s ease;
+    max-width: 100%;
+    max-height: 60vh;
+    width: auto;
+    height: auto;
 }
 
 #game-board:hover {
@@ -460,11 +470,12 @@ body::before {
     .game-header {
         flex-direction: column;
         gap: 10px;
+        max-width: 350px;
     }
     
     #game-board {
-        width: 300px;
-        height: 300px;
+        max-width: 350px;
+        max-height: 50vh;
     }
     
     .menu-btn {
@@ -484,6 +495,12 @@ body::before {
     .final-score-value {
         font-size: 2rem;
     }
+    
+    .game-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -491,9 +508,14 @@ body::before {
         font-size: 2rem;
     }
     
+    .game-header {
+        max-width: 280px;
+        padding: 10px;
+    }
+    
     #game-board {
-        width: 250px;
-        height: 250px;
+        max-width: 280px;
+        max-height: 45vh;
     }
     
     .menu-btn {
@@ -505,5 +527,36 @@ body::before {
     .game-controls {
         flex-direction: column;
         align-items: center;
+    }
+    
+    .control-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* 小さい画面での追加対応 */
+@media (max-width: 360px) {
+    .game-title {
+        font-size: 1.8rem;
+    }
+    
+    .game-header {
+        max-width: 250px;
+        padding: 8px;
+    }
+    
+    #game-board {
+        max-width: 250px;
+        max-height: 40vh;
+    }
+    
+    .score-label, .time-label {
+        font-size: 1rem;
+    }
+    
+    .score, .timer {
+        font-size: 1.3rem;
+        min-width: 50px;
     }
 }
