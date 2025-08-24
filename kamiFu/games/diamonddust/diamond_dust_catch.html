@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダイヤモンドダストキャッチ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #FFFFFF 100%);
+            overflow: hidden;
+            user-select: none;
+            touch-action: none;
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #gameCanvas {
+            border: 2px solid #4A90E2;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
+            background: linear-gradient(180deg, #E0F6FF 0%, #F0F8FF 100%);
+        }
+
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #gameInfo {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        #backButton {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #backButton {
+            background: linear-gradient(45deg, #E74C3C, #C0392B);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        #backButton:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        #score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2C3E50;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2C3E50;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 20;
+        }
+
+        #gameOver h2 {
+            color: #2C3E50;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        #finalScore {
+            font-size: 24px;
+            color: #E74C3C;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #3498DB, #2980B9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        #startScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+        }
+
+        #startScreen h1 {
+            color: #2C3E50;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+
+        #startScreen p {
+            color: #7F8C8D;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkleAnim 0.5s ease-out forwards;
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #gameCanvas {
+                width: 95vw;
+                height: 70vh;
+            }
+            
+            #ui {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+            }
+            
+            #gameInfo {
+                gap: 20px;
+            }
+            
+            #score, #timer {
+                font-size: 18px;
+            }
+
+            #backButton {
+                padding: 8px 16px;
+                font-size: 14px;
+                bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div id="ui">
+            <div id="gameInfo">
+                <div id="timer">Time: 30</div>
+                <div id="score">Score: 0</div>
+            </div>
+        </div>
+        <button id="backButton" onclick="backToStart()" style="display: none;">Back to Menu</button>
+
+        <div id="startScreen">
+            <h1 id="title">❄️ Diamond Dust Catch ❄️</h1>
+            <p id="description">Catch beautiful snow crystals falling from Tokachi-dake!<br>
+            Use left/right arrow keys or A/D keys to move<br>
+            On mobile, touch and swipe to move</p>
+            <div style="margin: 20px 0;">
+                <button class="btn" onclick="startGame()">Start Game</button>
+            </div>
+            <div style="margin: 10px 0;">
+                <button class="btn" onclick="toggleLanguage()" id="languageButton">Switch to 日本語</button>
+            </div>
+        </div>
+
+        <div id="gameOver">
+            <h2 id="gameOverTitle">Game Over</h2>
+            <div id="finalScore">Final Score: 0</div>
+            <button class="btn" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // ゲーム状態
+        let gameState = 'start'; // 'start', 'playing', 'gameOver'
+        let score = 0;
+        let timeLeft = 30;
+        let gameTime = 0;
+        let lastTimeUpdate = 0;
+        let gameStartTime = 0;
+        let isJapanese = false; // 言語設定（デフォルトは英語）
+        
+        // プレイヤー
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height - 60,
+            width: 60,
+            height: 40,
+            speed: 5
+        };
+        
+        // 雪の結晶配列
+        let snowflakes = [];
+        
+        // キー入力
+        const keys = {};
+        
+        // タッチ入力
+        let touchStartX = 0;
+        let isTouching = false;
+        
+        // 十勝岳の山の頂点（より現実的な形状）
+        const mountainPeaks = [
+            {x: 50, y: 450, height: 150},   // 左端の低い山
+            {x: 200, y: 400, height: 200},  // 左の峰
+            {x: 350, y: 350, height: 250},  // 主峰（十勝岳）
+            {x: 500, y: 380, height: 220},  // 右の峰
+            {x: 650, y: 420, height: 180},  // 右端の低い山
+            {x: 750, y: 450, height: 150}   // 最右端
+        ];
+        
+        // 背景の雪
+        let backgroundSnow = [];
+        
+        // 初期化
+        function init() {
+            // 背景の雪を生成
+            for (let i = 0; i < 50; i++) {
+                backgroundSnow.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speed: Math.random() * 1 + 0.5
+                });
+            }
+            
+            // イベントリスナー設定
+            document.addEventListener('keydown', (e) => {
+                keys[e.key] = true;
+            });
+            
+            document.addEventListener('keyup', (e) => {
+                keys[e.key] = false;
+            });
+            
+            // タッチイベント
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                isTouching = true;
+                touchStartX = e.touches[0].clientX;
+            });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (isTouching) {
+                    const touchX = e.touches[0].clientX;
+                    const diff = touchX - touchStartX;
+                    
+                    if (Math.abs(diff) > 10) {
+                        if (diff > 0) {
+                            player.x += player.speed;
+                        } else {
+                            player.x -= player.speed;
+                        }
+                        touchStartX = touchX;
+                    }
+                }
+            });
+            
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                isTouching = false;
+            });
+        }
+        
+        // 雪の結晶クラス
+        class Snowflake {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 15 + 10;
+                // 固定速度1-3
+                this.speed = Math.random() * 2 + 1;
+                this.rotation = 0;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+            }
+            
+            update() {
+                this.y += this.speed;
+                this.rotation += this.rotationSpeed;
+                
+                // 画面外に出たら削除
+                if (this.y > canvas.height + 20) {
+                    return false;
+                }
+                return true;
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                // 雪の結晶を描画
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 2;
+                ctx.shadowColor = '#87CEEB';
+                ctx.shadowBlur = 5;
+                
+                // 6角形の雪の結晶
+                for (let i = 0; i < 6; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(0, -this.size);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-this.size/3, -this.size/3);
+                    ctx.lineTo(this.size/3, this.size/3);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(this.size/3, -this.size/3);
+                    ctx.lineTo(-this.size/3, this.size/3);
+                    ctx.stroke();
+                    
+                    ctx.rotate(Math.PI / 3);
+                }
+                
+                ctx.restore();
+            }
+            
+            // 当たり判定
+            checkCollision(player) {
+                const dx = this.x - player.x;
+                const dy = this.y - player.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < (this.size + player.width / 2);
+            }
+        }
+        
+        // 背景を描画
+        function drawBackground() {
+            // 空のグラデーション
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');
+            gradient.addColorStop(0.5, '#E0F6FF');
+            gradient.addColorStop(1, '#F0F8FF');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 背景の雪
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            backgroundSnow.forEach(snow => {
+                ctx.beginPath();
+                ctx.arc(snow.x, snow.y, snow.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                snow.y += snow.speed;
+                if (snow.y > canvas.height) {
+                    snow.y = -10;
+                    snow.x = Math.random() * canvas.width;
+                }
+            });
+            
+            // 遠景の山々（より暗い色）
+            ctx.fillStyle = '#654321';
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            
+            // 遠景の山の頂点（より低く、より暗い）
+            const distantPeaks = [
+                {x: 0, y: 480, height: 120},
+                {x: 150, y: 450, height: 150},
+                {x: 300, y: 420, height: 180},
+                {x: 450, y: 440, height: 160},
+                {x: 600, y: 460, height: 140},
+                {x: 800, y: 480, height: 120}
+            ];
+            
+            distantPeaks.forEach(peak => {
+                ctx.lineTo(peak.x, canvas.height - peak.height);
+            });
+            
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.fill();
+            
+            // 十勝岳の本体（より立体的）
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            
+            mountainPeaks.forEach(peak => {
+                ctx.lineTo(peak.x, canvas.height - peak.height);
+            });
+            
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.fill();
+            
+            // 山の影（立体感を出す）
+            ctx.fillStyle = '#654321';
+            mountainPeaks.forEach((peak, index) => {
+                if (index < mountainPeaks.length - 1) {
+                    const nextPeak = mountainPeaks[index + 1];
+                    ctx.beginPath();
+                    ctx.moveTo(peak.x, canvas.height - peak.height);
+                    ctx.lineTo(nextPeak.x, canvas.height - nextPeak.height);
+                    ctx.lineTo(nextPeak.x, canvas.height - nextPeak.height + 30);
+                    ctx.lineTo(peak.x, canvas.height - peak.height + 30);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            });
+            
+            // 山の雪（より自然な形状）
+            ctx.fillStyle = '#FFFFFF';
+            mountainPeaks.forEach(peak => {
+                // 主峰（十勝岳）の雪はより多く
+                const snowHeight = peak.x === 350 ? 40 : 20;
+                ctx.beginPath();
+                ctx.moveTo(peak.x - 60, canvas.height - peak.height + snowHeight);
+                ctx.lineTo(peak.x, canvas.height - peak.height);
+                ctx.lineTo(peak.x + 60, canvas.height - peak.height + snowHeight);
+                ctx.fill();
+                
+                // 雪の影
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.beginPath();
+                ctx.moveTo(peak.x - 60, canvas.height - peak.height + snowHeight);
+                ctx.lineTo(peak.x - 30, canvas.height - peak.height + snowHeight + 10);
+                ctx.lineTo(peak.x + 30, canvas.height - peak.height + snowHeight + 10);
+                ctx.lineTo(peak.x + 60, canvas.height - peak.height + snowHeight);
+                ctx.fill();
+                ctx.fillStyle = '#FFFFFF';
+            });
+            
+            // 山の麓の森
+            ctx.fillStyle = '#228B22';
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            
+            mountainPeaks.forEach(peak => {
+                ctx.lineTo(peak.x, canvas.height - 30);
+            });
+            
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.fill();
+        }
+        
+        // プレイヤーを描画
+        function drawPlayer() {
+            ctx.fillStyle = '#E74C3C';
+            ctx.shadowColor = '#C0392B';
+            ctx.shadowBlur = 10;
+            
+            // カゴの形
+            ctx.beginPath();
+            ctx.moveTo(player.x - player.width/2, player.y);
+            ctx.lineTo(player.x - player.width/2 - 10, player.y - player.height);
+            ctx.lineTo(player.x + player.width/2 + 10, player.y - player.height);
+            ctx.lineTo(player.x + player.width/2, player.y);
+            ctx.closePath();
+            ctx.fill();
+            
+            // カゴの取っ手
+            ctx.strokeStyle = '#C0392B';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(player.x, player.y - player.height - 10, 15, 0, Math.PI);
+            ctx.stroke();
+        }
+        
+        // エフェクトを描画
+        function createSparkle(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = (x + Math.random() * 40 - 20) + 'px';
+                sparkle.style.top = (y + Math.random() * 40 - 20) + 'px';
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    document.body.removeChild(sparkle);
+                }, 500);
+            }
+        }
+        
+        // ゲーム更新
+        function update() {
+            if (gameState !== 'playing') return;
+            
+            // 正確な時間計算
+            const currentTime = Date.now();
+            gameTime = currentTime - gameStartTime;
+            
+            // プレイヤー移動
+            if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
+                player.x -= player.speed;
+            }
+            if (keys['ArrowRight'] || keys['d'] || keys['D']) {
+                player.x += player.speed;
+            }
+            
+            // プレイヤーの境界
+            player.x = Math.max(player.width/2, Math.min(canvas.width - player.width/2, player.x));
+            
+            // 雪の結晶生成
+            if (Math.random() < 0.03) {
+                snowflakes.push(new Snowflake());
+            }
+            
+            // 雪の結晶更新
+            snowflakes = snowflakes.filter(snowflake => {
+                if (!snowflake.update()) {
+                    // 雪を取り逃した（ペナルティなし）
+                    return false;
+                }
+                
+                // プレイヤーとの衝突判定
+                if (snowflake.checkCollision(player)) {
+                    score++;
+                    updateScoreDisplay();
+                    createSparkle(snowflake.x, snowflake.y);
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // 時間更新（正確に1秒ごと）
+            if (gameTime - lastTimeUpdate >= 1000) {
+                timeLeft--;
+                lastTimeUpdate = gameTime;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    gameOver();
+                }
+            }
+        }
+        
+
+        
+        // 描画
+        function draw() {
+            drawBackground();
+            
+            // 雪の結晶を描画
+            snowflakes.forEach(snowflake => snowflake.draw());
+            
+            drawPlayer();
+        }
+        
+        // ゲームループ
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // ゲーム開始
+        function startGame() {
+            gameState = 'playing';
+            score = 0;
+            timeLeft = 30;
+            gameStartTime = Date.now();
+            gameTime = 0;
+            lastTimeUpdate = 0;
+            snowflakes = [];
+            
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('backButton').style.display = 'block';
+            updateScoreDisplay();
+            updateTimerDisplay();
+            
+            gameLoop();
+        }
+        
+        // ゲームオーバー
+        function gameOver() {
+            gameState = 'gameOver';
+            document.getElementById('backButton').style.display = 'none';
+            updateFinalScoreDisplay();
+            document.getElementById('gameOver').style.display = 'block';
+        }
+        
+        // ゲーム再開
+        function restartGame() {
+            document.getElementById('gameOver').style.display = 'none';
+            startGame();
+        }
+        
+        // 言語切り替え関数
+        function toggleLanguage() {
+            isJapanese = !isJapanese;
+            updateLanguage();
+        }
+
+        // 言語更新関数
+        function updateLanguage() {
+            if (isJapanese) {
+                // 日本語
+                document.getElementById('title').textContent = '❄️ ダイヤモンドダストキャッチ ❄️';
+                document.getElementById('description').innerHTML = '十勝岳から降る美しい雪の結晶をキャッチしよう！<br>左右の矢印キーまたはA/Dキーで移動<br>スマホの場合は画面をタッチして移動';
+                document.querySelector('#startScreen .btn').textContent = 'ゲーム開始';
+                document.getElementById('gameOverTitle').textContent = 'ゲーム終了';
+                document.getElementById('finalScore').textContent = '最終スコア: 0';
+                document.querySelector('#gameOver .btn').textContent = 'もう一度遊ぶ';
+                document.getElementById('backButton').textContent = 'メニューに戻る';
+                document.getElementById('timer').textContent = '時間: 30';
+                document.getElementById('score').textContent = 'スコア: 0';
+                document.getElementById('languageButton').textContent = 'Switch to English';
+            } else {
+                // 英語
+                document.getElementById('title').textContent = '❄️ Diamond Dust Catch ❄️';
+                document.getElementById('description').innerHTML = 'Catch beautiful snow crystals falling from Tokachi-dake!<br>Use left/right arrow keys or A/D keys to move<br>On mobile, touch and swipe to move';
+                document.querySelector('#startScreen .btn').textContent = 'Start Game';
+                document.getElementById('gameOverTitle').textContent = 'Game Over';
+                document.getElementById('finalScore').textContent = 'Final Score: 0';
+                document.querySelector('#gameOver .btn').textContent = 'Play Again';
+                document.getElementById('backButton').textContent = 'Back to Menu';
+                document.getElementById('timer').textContent = 'Time: 30';
+                document.getElementById('score').textContent = 'Score: 0';
+                document.getElementById('languageButton').textContent = 'Switch to 日本語';
+            }
+        }
+
+        // 表示更新関数
+        function updateScoreDisplay() {
+            document.getElementById('score').textContent = isJapanese ? `スコア: ${score}` : `Score: ${score}`;
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById('timer').textContent = isJapanese ? `時間: ${timeLeft}` : `Time: ${timeLeft}`;
+        }
+
+        function updateFinalScoreDisplay() {
+            document.getElementById('finalScore').textContent = isJapanese ? `最終スコア: ${score}` : `Final Score: ${score}`;
+        }
+
+        // スタート画面に戻る関数
+        function backToStart() {
+            gameState = 'start';
+            document.getElementById('startScreen').style.display = 'block';
+            document.getElementById('backButton').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'none';
+        }
+
+        // 初期化実行
+        init();
+        updateLanguage(); // 初期言語設定
+    </script>
+</body>
+</html>
