@@ -197,6 +197,20 @@
                         <p data-en="Connect lavender flowers of the same color to harvest them!" data-ja="同じ色のラベンダーの花をつないで収穫しましょう！">Connect lavender flowers of the same color to harvest them! </p>
                         <button class="play-btn" onclick="openGame('lavender-puzzle')" data-en="Play Now" data-ja="今すぐプレイ">Play Now</button>
                     </div>
+                    
+                    <div class="game-card fade-in">
+                        <img src="games/diamond-dust-catch/diamond_dust_catch.png" alt="Diamond Dust Catch" class="game-thumbnail">
+                        <h3 data-en="Diamond Dust Catch" data-ja="ダイヤモンドダストキャッチ">Diamond Dust Catch</h3>
+                        <p data-en="Catch beautiful snow crystals falling from Tokachi-dake!" data-ja="十勝岳から降る美しい雪の結晶をキャッチしましょう！">Catch beautiful snow crystals falling from Tokachi-dake!</p>
+                        <button class="play-btn" onclick="openGame('diamond-dust-catch')" data-en="Play Now" data-ja="今すぐプレイ">Play Now</button>
+                    </div>
+                    
+                    <div class="game-card fade-in">
+                        <img src="games/LavenderHarvest/LavenderHarvest.png" alt="Lavender Harvest" class="game-thumbnail">
+                        <h3 data-en="Lavender Harvest" data-ja="ラベンダーハーベスト">Lavender Harvest</h3>
+                        <p data-en="Harvest lavender bouquets with the same number of flowers to score points!" data-ja="同じ数のラベンダーが咲いている花束を収穫してスコアを獲得しよう！">Harvest lavender bouquets with the same number of flowers to score points!</p>
+                        <button class="play-btn" onclick="openGame('lavender-harvest')" data-en="Play Now" data-ja="今すぐプレイ">Play Now</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -216,6 +230,12 @@
             switch(gameType) {
                 case 'lavender-puzzle':
                     window.open('games/lavender-puzzle/lavender-puzzle.html', '_blank');
+                    break;
+                case 'diamond-dust-catch':
+                    window.open('games/diamond-dust-catch/diamond_dust_catch.html', '_blank');
+                    break;
+                case 'lavender-harvest':
+                    window.open('games/LavenderHarvest/LavenderHarvest.html', '_blank');
                     break;
                 default:
                     console.log('Unknown game type:', gameType);

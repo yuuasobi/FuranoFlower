@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavender Match - ラベンダーマッチ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #e6e6fa 0%, #9370db 50%, #4b0082 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            pointer-events: none;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 900px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 15px;
+        }
+
+        .score {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #98fb98;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 15px;
+        }
+
+        .game-field {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .center-field {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .lavender-bouquet {
+            width: 120px;
+            height: 170px;
+            background: linear-gradient(135deg, #e6e6fa, #d8bfd8);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .lavender-bouquet::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .lavender-bouquet:hover::before {
+            transform: translateX(100%);
+        }
+
+        .lavender-bouquet:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .lavender-count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4b0082;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .lavender-icon {
+            font-size: 4rem;
+            color: #9370db;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .lavender-flowers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+            max-width: 100%;
+            padding: 5px;
+        }
+
+        .lavender-flower {
+            font-size: 1.2rem;
+            color: #9370db;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            animation: flowerGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes flowerGlow {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .hand .lavender-flowers {
+            gap: 1px;
+        }
+
+        .hand .lavender-flower {
+            font-size: 0.8rem;
+        }
+
+        .hand {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hand .lavender-bouquet {
+            width: 70px;
+            height: 100px;
+            font-size: 0.7rem;
+            position: absolute;
+        }
+
+        /* 上段の3枚 */
+        .hand .lavender-bouquet:nth-child(1) {
+            top: 5%;
+            left: 15%;
+        }
+
+        .hand .lavender-bouquet:nth-child(2) {
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .hand .lavender-bouquet:nth-child(3) {
+            top: 5%;
+            right: 15%;
+        }
+
+        /* 中段左の3枚 */
+        .hand .lavender-bouquet:nth-child(4) {
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+        }
+
+        .hand .lavender-bouquet:nth-child(5) {
+            top: 50%;
+            left: 25%;
+            transform: translateY(-50%);
+        }
+
+        .hand .lavender-bouquet:nth-child(6) {
+            top: 50%;
+            left: 45%;
+            transform: translateY(-50%);
+        }
+
+        /* 中段右の3枚 */
+        .hand .lavender-bouquet:nth-child(7) {
+            top: 50%;
+            right: 45%;
+            transform: translateY(-50%);
+        }
+
+        .hand .lavender-bouquet:nth-child(8) {
+            top: 50%;
+            right: 25%;
+            transform: translateY(-50%);
+        }
+
+        .hand .lavender-bouquet:nth-child(9) {
+            top: 50%;
+            right: 5%;
+            transform: translateY(-50%);
+        }
+
+        /* 下段の3枚 */
+        .hand .lavender-bouquet:nth-child(10) {
+            bottom: 5%;
+            left: 15%;
+        }
+
+        .hand .lavender-bouquet:nth-child(11) {
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .hand .lavender-bouquet:nth-child(12) {
+            bottom: 5%;
+            right: 15%;
+        }
+
+        .hand .lavender-count {
+            font-size: 1.4rem;
+        }
+
+        .hand .lavender-icon {
+            font-size: 2.5rem;
+        }
+
+        .hand .lavender-flowers {
+            gap: 1px;
+        }
+
+        .hand .lavender-flower {
+            font-size: 0.8rem;
+        }
+
+        .pass-button {
+            background: linear-gradient(45deg, #ff69b4, #da70d6);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .pass-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #ff1493, #c71585);
+        }
+
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-over-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(230, 230, 250, 0.95));
+            color: #4b0082;
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(147, 112, 219, 0.3);
+        }
+
+        .game-over h2 {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            color: #9370db;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .final-score {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #4b0082;
+            margin: 25px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .restart-button {
+            background: linear-gradient(45deg, #9370db, #8a2be2);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 30px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .restart-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #8a2be2, #9932cc);
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h1 {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            color: #ffd700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .start-screen p {
+            font-size: 1.3rem;
+            margin-bottom: 35px;
+            line-height: 1.7;
+            color: #f0f8ff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .language-toggle {
+            margin-bottom: 25px;
+        }
+
+        .language-toggle button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .language-toggle button.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.05);
+        }
+
+        .start-button {
+            background: linear-gradient(45deg, #98fb98, #90ee90);
+            color: #2f4f2f;
+            border: none;
+            padding: 25px 50px;
+            border-radius: 35px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #90ee90, #32cd32);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .lavender-bouquet.correct {
+            animation: correctBouquet 0.6s ease;
+        }
+
+        @keyframes correctBouquet {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.15) rotate(5deg); }
+            50% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.05) rotate(2deg); }
+            100% { transform: scale(1); }
+        }
+
+        .lavender-bouquet.wrong {
+            animation: wrongBouquet 0.4s ease;
+        }
+
+        @keyframes wrongBouquet {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-12px); }
+            75% { transform: translateX(12px); }
+        }
+
+        .lavender-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #e6e6fa;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lavender-particles" id="particles"></div>
+    
+    <div class="game-container">
+        <!-- スタート画面 -->
+        <div id="startScreen" class="start-screen">
+            <h1>🌿 Lavender Harvest 🌿</h1>
+            <div class="language-toggle">
+                <button id="langEn" class="active" onclick="setLanguage('en')">English</button>
+                <button id="langJa" onclick="setLanguage('ja')">日本語</button>
+            </div>
+            <p id="gameDescription">Match lavender bouquets with the same number of flowers to score points!<br>
+            Perfect matches (exact same count) give you 10 points!</p>
+            <button class="start-button" id="startButton" onclick="startGame()">Start Harvest</button>
+        </div>
+
+        <!-- ゲーム画面 -->
+        <div id="gameScreen" class="hidden">
+            <div class="header">
+                <div class="timer" id="timer">30</div>
+                <div class="score" id="score">Score: 0</div>
+            </div>
+
+            <div class="game-field">
+                <div class="center-field">
+                    <div id="centerBouquet" class="lavender-bouquet"></div>
+                </div>
+                <div class="hand" id="hand"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="pass-button" id="passButton" onclick="pass()">Refresh Field</button>
+            </div>
+        </div>
+
+        <!-- ゲームオーバー画面 -->
+        <div id="gameOverScreen" class="game-over hidden">
+            <div class="game-over-content">
+                <h2 id="gameOverTitle">Harvest Complete!</h2>
+                <div class="final-score" id="finalScore">0</div>
+                <button class="restart-button" id="restartButton" onclick="restartGame()">Harvest Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 言語設定
+        let currentLanguage = 'en';
+        
+        // 翻訳テキスト
+        const translations = {
+                         en: {
+                 gameDescription: "Harvest lavender bouquets with the same number of flowers to score points!<br>Score equals the number of flowers in the target bouquet!",
+                 startButton: "Start Harvest",
+                 score: "Score: ",
+                 passButton: "Refresh Field",
+                 gameOverTitle: "Harvest Complete!",
+                 restartButton: "Harvest Again"
+             },
+             ja: {
+                 gameDescription: "同じ数のラベンダーが咲いている花束を収穫してスコアを獲得しよう！<br>スコアはお題の花束のラベンダーの数と同じ！",
+                 startButton: "収穫開始",
+                 score: "スコア: ",
+                 passButton: "畑を更新",
+                 gameOverTitle: "収穫完了！",
+                 restartButton: "もう一度収穫"
+             }
+        };
+
+        // ゲーム状態
+        let gameState = {
+            timeLeft: 30,
+            score: 0,
+            centerBouquet: null,
+            hand: [],
+            gameRunning: false,
+            timer: null
+        };
+
+        // ラベンダーの数（1-12本）
+        const lavenderCounts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+        // ラベンダー花束生成関数
+        function createLavenderBouquet() {
+            const count = lavenderCounts[Math.floor(Math.random() * lavenderCounts.length)];
+            return { count };
+        }
+
+        // ラベンダー花束表示関数
+        function displayLavenderBouquet(bouquet, element) {
+            element.className = 'lavender-bouquet';
+            
+            // 中央の花束は数字表示
+            if (element.id === 'centerBouquet') {
+                element.innerHTML = `
+                    <div class="lavender-count">${bouquet.count}</div>
+                    <div class="lavender-icon">🌿</div>
+                `;
+            } else {
+                // 手札は花をバラバラに表示
+                const flowers = '🌿'.repeat(bouquet.count);
+                element.innerHTML = `
+                    <div class="lavender-flowers">${flowers}</div>
+                `;
+            }
+        }
+
+        // 手札生成
+        function generateHand() {
+            gameState.hand = [];
+            // ランダムで3-12枚の手札を生成（3x4のグリッドに対応）
+            const handSize = Math.floor(Math.random() * 10) + 3; // 3-12枚
+            for (let i = 0; i < handSize; i++) {
+                gameState.hand.push(createLavenderBouquet());
+            }
+            displayHand();
+        }
+
+        // 手札表示
+        function displayHand() {
+            const handElement = document.getElementById('hand');
+            handElement.innerHTML = '';
+            
+            gameState.hand.forEach((bouquet, index) => {
+                const bouquetElement = document.createElement('div');
+                bouquetElement.className = 'lavender-bouquet';
+                
+                // 手札は花をバラバラに表示
+                const flowers = '🌿'.repeat(bouquet.count);
+                bouquetElement.innerHTML = `
+                    <div class="lavender-flowers">${flowers}</div>
+                `;
+                bouquetElement.onclick = () => playBouquet(index);
+                handElement.appendChild(bouquetElement);
+            });
+        }
+
+        // ラベンダー花束を出す
+        function playBouquet(index) {
+            if (!gameState.gameRunning) return;
+
+            const playedBouquet = gameState.hand[index];
+            const centerBouquet = gameState.centerBouquet;
+            
+            // 同じ数のラベンダーかチェック
+            const isMatch = playedBouquet.count === centerBouquet.count;
+
+            if (isMatch) {
+                // 正解
+                gameState.score += centerBouquet.count; // お題のラベンダーの数だけスコア獲得
+                document.getElementById('score').textContent = `${translations[currentLanguage].score}${gameState.score}`;
+                
+                // アニメーション
+                const bouquetElement = document.querySelectorAll('#hand .lavender-bouquet')[index];
+                bouquetElement.classList.add('correct');
+                setTimeout(() => bouquetElement.classList.remove('correct'), 600);
+
+                // 手札から削除して新しい花束を追加
+                gameState.hand.splice(index, 1);
+                // 手札が少なくなったら新しい花束を追加
+                if (gameState.hand.length < 3) {
+                    gameState.hand.push(createLavenderBouquet());
+                }
+                displayHand();
+
+                // 中央花束を更新
+                updateCenterBouquet();
+            } else {
+                // 不正解 - スコアを1減らす
+                gameState.score = Math.max(0, gameState.score - 1); // スコアは0未満にならない
+                document.getElementById('score').textContent = `${translations[currentLanguage].score}${gameState.score}`;
+                
+                const bouquetElement = document.querySelectorAll('#hand .lavender-bouquet')[index];
+                bouquetElement.classList.add('wrong');
+                setTimeout(() => bouquetElement.classList.remove('wrong'), 400);
+            }
+        }
+
+        // 中央花束更新
+        function updateCenterBouquet() {
+            gameState.centerBouquet = createLavenderBouquet();
+            displayLavenderBouquet(gameState.centerBouquet, document.getElementById('centerBouquet'));
+        }
+
+        // パス（畑を更新）
+        function pass() {
+            if (!gameState.gameRunning) return;
+            // 手札を新しい花束で置き換える
+            generateHand();
+            // 中央花束は更新しない
+        }
+
+        // タイマー更新
+        function updateTimer() {
+            if (gameState.timeLeft <= 0) {
+                endGame();
+                return;
+            }
+            
+            document.getElementById('timer').textContent = gameState.timeLeft;
+            gameState.timeLeft--;
+        }
+
+        // パーティクル生成
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 言語設定関数
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            
+            // ボタンのアクティブ状態を更新
+            document.getElementById('langEn').classList.toggle('active', lang === 'en');
+            document.getElementById('langJa').classList.toggle('active', lang === 'ja');
+            
+            // テキストを更新
+            document.getElementById('gameDescription').innerHTML = translations[lang].gameDescription;
+            document.getElementById('startButton').textContent = translations[lang].startButton;
+            document.getElementById('passButton').textContent = translations[lang].passButton;
+            document.getElementById('gameOverTitle').textContent = translations[lang].gameOverTitle;
+            document.getElementById('restartButton').textContent = translations[lang].restartButton;
+            
+            // スコア表示を更新
+            if (gameState.gameRunning) {
+                document.getElementById('score').textContent = `${translations[lang].score}${gameState.score}`;
+            }
+        }
+
+        // ゲーム開始
+        function startGame() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            
+            gameState.gameRunning = true;
+            gameState.timeLeft = 30;
+            gameState.score = 0;
+            
+            document.getElementById('score').textContent = `${translations[currentLanguage].score}0`;
+            document.getElementById('timer').textContent = '30';
+            
+            generateHand();
+            updateCenterBouquet();
+            
+            gameState.timer = setInterval(updateTimer, 1000);
+        }
+
+        // ゲーム終了
+        function endGame() {
+            gameState.gameRunning = false;
+            clearInterval(gameState.timer);
+            
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('gameOverScreen').classList.remove('hidden');
+        }
+
+        // ゲームリスタート
+        function restartGame() {
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // デフォルト言語を設定
+            setLanguage('en');
+            // パーティクルを生成
+            createParticles();
+        });
+    </script>
+</body>
+</html>
